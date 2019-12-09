@@ -14,6 +14,8 @@ apt-run: &apt-install
   command: |
     sudo apt update -qq
     sudo apt install -y python-pip
+    sudo pip install ansible
+    sudo pip install --upgrade setuptools
 
 version: 2.1
 
@@ -84,6 +86,14 @@ jobs:
           name: publish release on github
           command: |
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${CIRCLE_TAG} ~/dist/Splunk_TA_nix.tar.gz
+  deploy-new-release:
+    executor: content-executor
+    steps:
+      - run:
+          name: Ansible Play
+          command: |
+            ansible --version
+    
 workflows:
   version: 2.1
   validate-and-build:
@@ -100,3 +110,9 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
+      - deploy-new-release:
+          requires:
+            - validate-app
+            filters:
+              tags:
+                only: /.*/
