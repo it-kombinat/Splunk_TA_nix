@@ -90,6 +90,11 @@ jobs:
     executor: content-executor
     steps:
       - run:
+          name: Install Ansible
+          command: |
+            sudo pip install ansible
+            sudo pip install --upgrade setuptools
+      - run:
           name: Ansible Play
           command: |
             ansible --version
