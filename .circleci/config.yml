@@ -113,6 +113,6 @@ workflows:
       - deploy-new-release:
           requires:
             - validate-app
-            filters:
-              tags:
-                only: /.*/
+          filters:
+            tags:
+              only: /.*/
